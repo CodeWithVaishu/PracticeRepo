@@ -1,0 +1,130 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- none
+
+pool:
+  name: 'Default'
+
+variables:
+  workingdirectory: $(system.DefaultWorkingDirectory)
+
+  Stages:
+  Stage 1 : Validate
+  -stage: validate
+  displayName: Validate Terraform
+  jobs:
+  -job: TerraformValidate
+  Steps:
+  -checkout: Self
+
+  -task: TerraformInstaller@1
+  displayName: Install Terraform
+  inputs:
+    terraformversion: '1.5.7'
+
+  -script: |
+     terraform -fmt -check -recursive
+  displayName: Check terraform format
+  workingdirectory: $(workingdirectory)
+
+  -task: TerraformTask@5
+  displayName: Terraform Task1
+  inputs:
+    provider: 'azurerm'
+    command: 'init'
+    backendserviceArm: 'Azure Subscription 1(af43aaaf-c72d-456d-a758-b503ecbac85f)'
+    backendAzureRmOverrideSubscriptionID: 'af43aaaf-c72d-456d-a758-b503ecbac85f'
+    backendAzureRmResourceGroupName: 'AKS-Test'
+    backendAzureRmStorageAccountName: 'pipeline123'
+    backendAzureRmContainerName: 'state'
+    backendAzureRmKey: 'pipeline.tfstate'
+
+  -task: TerraformTask@5
+  displayName: Validate terraform
+  workingdiretory: $(workingdirectory)
+
+  #Stage 2
+  -stage: Plan
+   displayName: Terraform Plan
+   dependsOn: Validate
+   jobs:
+     -job: TerraformPlan
+      steps: 
+      -checkout: Self
+
+      -task: TerraformInstaller@1
+      displayName: Install Terraform
+      inputs:
+      terraformVersion: '1.5.7'
+
+     -task: TerraformTask@5
+     displayName: Terraform Init
+     inputs:
+     provider: 'azurerm'
+     command: 'init'
+     backendserviceArm: 'Azure Subscription 1(af43aaaf-c72d-456d-a758-b503ecbac85f)'
+     backendAzureRmOverrideSubscriptionID: 'af43aaaf-c72d-456d-a758-b503ecbac85f'
+     backendAzureRmResourceGroupName: 'AKS-Test'
+     backendAzureRmStorageAccountName: 'pipeline123'
+     backendAzureRmContainerName: 'state'
+     backendAzureRmKey: 'pipeline.tfstate' 
+
+     -task: TerraformTask@5
+     displayName: Terraform Plan
+     inputs: 
+     command: 'Plan'
+     workingdirectory: $(workingdirectory)
+     environmentServiceNameAzureRm: 'Azure Subscription(af43aaaf-c72d-456d-a758-b503ecbac85f)'
+     backendAzureRmOverrideSubscriptionID: 'af43aaaf-c72d-456d-a758-b503ecbac85f'
+     commandOptions: "-out=tfplan"
+
+    -publish: $(workingdirectory)/tfplan
+    artifact: tfplan
+
+    #Stage 3
+
+    -stage: Apply
+    displayName: Terraform Apply
+    dependsOn: Plan
+    jobs: 
+    -job: Terraform Apply
+    displayName: Apply Terraform Changes
+    steps:
+    -checkout: self
+
+    -download: current
+     artifact: tfplan
+   
+    -task: TerraformInstaller@1
+    displayName: Terraform Install
+    inputs:
+    terraformVersion: '1.5.7'
+
+    -task: TerrafromTask@5
+    displayName: Terraform Init
+    inputs:
+    provider: 'azurerm'
+    Command: 'init' 
+    backendServiceArm: 'Azure subscription 1(af43aaaf-c72d-456d-a758-b503ecbac85f)'
+    backendAzureRmOverrideSubscriptionID: 'af43aaaf-c72d-456d-a758-b503ecbac85f'
+    backendAzureRmResourceGroupName: 'Aks-Test'
+    backendAzureRmStorageAccountName: 'pipeline123'
+    backendAzureRmContainerName: 'state'
+    backendAzureRmKey: 'pipeline.tfstate'
+
+    -task: TerraformTask@5
+    displayName: Terraform Apply
+    inputs:
+    command: 'apply'
+    environmentServiceNameAzureRM: 'Azure subscription 1(af43aaaf-c72d-456d-a758-b503ecbac85f)'
+    workingDirectory: $(workingdirectory)
+    commandOptions: $(Pipeline.workspace)/tfplan/tfplan
+
+
+    
+
+
