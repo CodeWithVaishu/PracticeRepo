@@ -24,12 +24,12 @@ variables:
   -task: TerraformInstaller@1
   displayName: Install Terraform
   inputs:
-    terraformversion: '1.5.7'
+    terraformVersion: '1.5.7'
 
   -script: |
      terraform -fmt -check -recursive
   displayName: Check terraform format
-  workingdirectory: $(workingdirectory)
+  workingDirectory: $(workingdirectory)
 
   -task: TerraformTask@5
   displayName: Terraform Task1
@@ -57,7 +57,7 @@ variables:
       -checkout: Self
 
       -task: TerraformInstaller@1
-      displayName: Install Terraform
+      displayName: Install Terraform2
       inputs:
       terraformVersion: '1.5.7'
 
@@ -100,7 +100,7 @@ variables:
      artifact: tfplan
    
     -task: TerraformInstaller@1
-    displayName: Terraform Install
+    displayName: Terraform Install3
     inputs:
     terraformVersion: '1.5.7'
 
