@@ -1,0 +1,53 @@
+# New pipeline
+# Vaishnavi
+
+trigger:
+- none
+
+variables:
+  workingDirectory: $(System.DefaultWorkingDirectory)
+
+pool:
+  name: 'Default'
+
+stages: 
+
+#stage1
+
+- stage: Validate
+  displayName: Validate Terraform
+  jobs: 
+  - job: TerraformValidate
+    steps:
+    - checkout: self
+
+    - task: TerraformInstaller@1
+      displayName: Install Terraform
+      inputs: 
+        terraformVersion: '1.5.7'
+
+    - task: TerraformTask@5
+      displayName: Terraform Init
+      inputs:
+        provider: 'azurerm'
+        backendServiceArm: 'Azure subscription 1(af43aaaf-c72d-456d-a758-b503ecbac85f)'
+        backendAzureRmOverrideSubscriptionID: 'af43aaaf-c72d-456d-a758-b503ecbac85f'
+        backendAzureRmResourceGroupName: 'Vaishnavi-Practice'
+        backendAzureRmStorageAccountName: 'vaishnaviterraform'
+        backendAzureRmContainerName: 'state1'
+        backendAzureRmKey: 'pipeline.tfstate'
+
+    - task: TerraformTask@5
+      displayName: Terraform Format Check
+      workingDirectory: $(workingDirectory)
+    - script: |
+        terraform fmt -check -recursive
+
+    - task: TerraformTask@5
+      displayName:  Terraform Validate
+      inputs:
+        command: 'validate'
+        workingDirectory: $(workingDirectory)
+        
+
+    
