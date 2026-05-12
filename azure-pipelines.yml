@@ -36,6 +36,7 @@ stages:
         backendAzureRmStorageAccountName: 'vaishnaviterraform'
         backendAzureRmContainerName: 'state1'
         backendAzureRmKey: 'pipeline.tfstate'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
 
     - script: |
        terraform fmt -check -recursive
