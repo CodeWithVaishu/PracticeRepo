@@ -5,7 +5,7 @@ trigger:
 - none
 
 variables:
-  workingDirectory: $(System.DefaultWorkingDirectory)
+  workingDirectory: 'terraform'
 
 pool:
   name: 'Default'
@@ -46,7 +46,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'validate'
-        workingDirectory: $(workingDirectory)
+        workingDirectory: $(workingDirectory)/terraform
 
 # Stage2: Plan
 - stage: Plan
@@ -77,7 +77,7 @@ stages:
       displayName: 'Terraform Plan'
       inputs:
         command: 'plan'
-        workingDirectory: $(workingDirectory)
+        workingDirectory: $(workingDirectory)/terraform
         environmentServiceNameAzureRM: 'AzureConnection6'
         backendAzureRmOverrideSubscriptionID: 'af43aaaf-c72d-456d-a758-b503ecbac85f'
         commandOptions: "-out=tfplan"
