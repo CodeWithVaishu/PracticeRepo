@@ -39,7 +39,7 @@ stages:
 
     - script: |
        terraform fmt -check -recursive
-       displayName: Terraform Format Check
+      displayName: Terraform Format Check
 
     - task: TerraformTask@5
       displayName: 'Terraform Validate'
