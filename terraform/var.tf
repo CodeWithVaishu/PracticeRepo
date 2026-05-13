@@ -1,6 +1,7 @@
 variable "resource_group_name" {
-  description = "my-terraform-rg"
+  description = "my-resource-group"
   type        = string
+  default     = "my-terraform-rg"
 }
 
 variable "location" {
