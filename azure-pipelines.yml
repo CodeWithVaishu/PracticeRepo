@@ -29,6 +29,7 @@ stages:
     - task: TerraformTask@5
       displayName: Terraform Init
       inputs:
+        command: 'init'
         provider: 'azurerm'
         backendServiceArm: 'AzureConnection6'
         backendAzureRmOverrideSubscriptionID: 'af43aaaf-c72d-456d-a758-b503ecbac85f'
@@ -74,7 +75,7 @@ stages:
         backendAzureRmContainerName: 'state1'
         backendAzureRmKey: 'pipeline.tfstate'
 
-    - task: Terraformtask@5
+    - task: TerraformTask@5
       displayName: 'Terraform Plan'
       inputs:
         command: 'plan'
