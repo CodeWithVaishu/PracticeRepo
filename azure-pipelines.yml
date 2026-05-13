@@ -83,7 +83,7 @@ stages:
         workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
         environmentServiceNameAzureRM: 'AzureConnection6'
         backendAzureRmOverrideSubscriptionID: 'af43aaaf-c72d-456d-a758-b503ecbac85f'
-        commandOptions: '-out=tfplan -input=false'
+        commandOptions: "-out=tfplan"
       
     - publish: $(workingDirectory)/tfplan
       artifact: tfplan
