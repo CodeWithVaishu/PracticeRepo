@@ -114,6 +114,7 @@ stages:
         backendAzureRmOverrideSubscriptionID: 'af43aaaf-c72d-456d-a758-b503ecbac85f' 
         backendAzureRmResourceGroupName: 'Vaishnavi-Practice'
         backendAzureRmStorageAccountName: 'vaishnaviterraform'
+        backendAzureRmContainerName: 'state1'
         backendAzureRmKey: 'pipeline.tfstate'
 
 
