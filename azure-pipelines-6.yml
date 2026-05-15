@@ -122,6 +122,10 @@ stages:
       inputs:
         command: 'apply'
         environmentServiceNameAzureRm: 'AzureConnection6'
+        backendAzureRmResourceGroupName: 'Vaishnavi-Practice'
+        backendAzureRmStorageAccountName: 'vaishnaviterraform'
+        backendAzureRmContainerName: 'state1'
+        backendAzureRmKey: 'pipeline.tfstate'
         workingDirectory: '$(system.DefaultWorkingDirectory)/terraform'
         commandOptions: "$(Pipeline.Workspace)/tfplan/tfplan"
 
