@@ -1,0 +1,130 @@
+# New pipeline
+# Vaishnavi
+
+trigger:
+- none
+
+variables:
+  workingDirectory: 'terraform'
+
+pool:
+  name: 'Default'
+
+stages: 
+
+#stage1
+
+- stage: Validate
+  displayName: Validate Terraform
+  jobs: 
+  - job: TerraformValidate
+    steps:
+    - checkout: self
+
+    - task: TerraformInstaller@1
+      displayName: Install Terraform
+      inputs: 
+        terraformVersion: '1.5.7'
+
+    - task: TerraformTask@5
+      displayName: Terraform Init
+      inputs:
+        command: 'init'
+        provider: 'azurerm'
+        backendServiceArm: 'AzureConnection6'
+        backendAzureRmOverrideSubscriptionID: 'af43aaaf-c72d-456d-a758-b503ecbac85f'
+        backendAzureRmResourceGroupName: 'Vaishnavi-Practice'
+        backendAzureRmStorageAccountName: 'vaishnaviterraform'
+        backendAzureRmContainerName: 'state1'
+        backendAzureRmKey: 'pipeline.tfstate'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+
+    - script: |
+       terraform fmt -check -recursive
+      displayName: Terraform Format Check
+
+    - task: TerraformTask@5
+      displayName: 'Terraform Validate'
+      inputs:
+        provider: 'azurerm'
+        command: 'validate'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+
+# Stage2: Plan
+- stage: Plan
+  displayName: Terraform Plan
+  dependsOn: Validate
+  jobs:
+  - job: TerraformPlan
+    steps: 
+    - checkout: self
+
+    - task: TerraformInstaller@1
+      displayName: Install Terraform
+      inputs:
+        terraformVersion: '1.5.7'
+
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+        backendServiceArm: 'AzureConnection6'
+        backendAzureRmOverrideSubscriptionID: 'af43aaaf-c72d-456d-a758-b503ecbac85f'
+        backendAzureRmResourceGroupName: 'Vaishnavi-Practice'
+        backendAzureRmStorageAccountName: 'vaishnaviterraform'
+        backendAzureRmContainerName: 'state1'
+        backendAzureRmKey: 'pipeline.tfstate'
+
+    - task: TerraformTask@5
+      displayName: 'Terraform Plan'
+      inputs:
+        command: 'plan'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+        environmentServiceNameAzureRM: 'AzureConnection6'
+        backendAzureRmOverrideSubscriptionID: 'af43aaaf-c72d-456d-a758-b503ecbac85f'
+        commandOptions: "-out=tfplan"
+      
+    - publish: $(workingDirectory)/tfplan
+      artifact: tfplan
+
+# Stage 3 - Terraform Apply
+- stage: Apply
+  displayName: Terraform Apply
+  dependsOn: Plan
+  jobs: 
+  - job: TerraformApply
+    steps: 
+    - checkout: self 
+
+    - download: current
+      artifact: tfplan
+
+    - task: terraformInstaller@1
+      displayName: Install Terraform
+      inputs:
+        version: '1.5.7'
+
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        workingDirectory: '$(system.DefaultWorkingDirectory)/terraform'
+        backendServiceArm: 'AzureConnection6'
+        backendAzureRmOverrideSubscriptionID: 'af43aaaf-c72d-456d-a758-b503ecbac85f' 
+        backendAzureRmResourceGroupName: 'Vaishnavi-Practice'
+        backendAzureRmStorageAccountName: 'vaishnaviterraform'
+        backendAzureRmKey: 'pipeline.tfstate'
+
+
+    -task: terraformTask@5
+    displayName: Terraform Apply
+    inputs:
+      command: 'apply'
+      environmentServiceNameAzureRm: 'AzureConnection6'
+      workingDirectory: '$(system.DefaultWorkingDirectory)/terraform'
+      commandOptions: "$(Pipeline.Workspace)/tfplan/tfplan"
+
+
+
+
