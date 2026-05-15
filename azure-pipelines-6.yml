@@ -105,7 +105,7 @@ stages:
       inputs:
         version: '1.5.7'
 
-    - task: TerraformTask@5
+    - task: terraformTask@5
       inputs:
         provider: 'azurerm'
         command: 'init'
@@ -117,13 +117,13 @@ stages:
         backendAzureRmKey: 'pipeline.tfstate'
 
 
-    -task: terraformTask@5
-    displayName: Terraform Apply
-    inputs:
-      command: 'apply'
-      environmentServiceNameAzureRm: 'AzureConnection6'
-      workingDirectory: '$(system.DefaultWorkingDirectory)/terraform'
-      commandOptions: "$(Pipeline.Workspace)/tfplan/tfplan"
+    - task: terraformTask@5
+      displayName: Terraform Apply
+      inputs:
+        command: 'apply'
+        environmentServiceNameAzureRm: 'AzureConnection6'
+        workingDirectory: '$(system.DefaultWorkingDirectory)/terraform'
+        commandOptions: "$(Pipeline.Workspace)/tfplan/tfplan"
 
 
 
