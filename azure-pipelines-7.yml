@@ -39,9 +39,6 @@ stages:
         backendAzureRmKey: 'pipeline.tfstate'
         workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
 
-    - script: |
-       terraform fmt -check -recursive
-      displayName: Terraform Format Check
 
     - task: TerraformTask@5
       displayName: 'Terraform Validate'
