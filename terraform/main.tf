@@ -4,6 +4,6 @@ resource "azurerm_resource_group" "my-resource-group" {
 }
 
 resource "azurerm_resource_group" "vaishnavi-rg-2" {
-  name     = var.resource_group_name
+  name     = var.resource_group_name2
   location = var.location
 }

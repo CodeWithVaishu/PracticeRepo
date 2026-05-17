@@ -10,7 +10,7 @@ variable "location" {
   default     = "Central India"
 }
 
-variable "resource_group_name" {
+variable "resource_group_name2" {
   description = "vaishnavi-rg-2"
   type        = string
 }
