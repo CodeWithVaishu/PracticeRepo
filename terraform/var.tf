@@ -9,3 +9,8 @@ variable "location" {
   type        = string
   default     = "Central India"
 }
+
+variable "resource_group_name" {
+  description = "vaishnavi-rg-2"
+  type        = string
+}
