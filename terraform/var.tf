@@ -11,6 +11,7 @@ variable "location" {
 }
 
 variable "resource_group_name2" {
-  description = "vaishnavi-rg-2"
+  description = "my-resource-group2"
   type        = string
+  default     = "vaishnavi-rg-2"
 }
