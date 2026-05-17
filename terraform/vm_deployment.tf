@@ -1,7 +1,7 @@
 # creating first virtual mavchine.
 # Author - vaishnavi Pangaonkar.
 
-resource "azurerm_resource_group" "vaishnavi-rg-3" {
+resource "azurerm_resource_group" "vaishnavi_rg_3" {
   name     = var.resource_group_name3
   location = var.location
 }
