@@ -28,20 +28,3 @@ variable "virtual_network1" {
   default     = "vnet1"
 }
 
-variable "vm_name" {
-  description = "my-vm"
-  type        = string
-  default     = "vaishnavi-vm"
-}
-
-variable "admin_username" {
-  description = "admin-user"
-  type        = string
-  default     = "admin-user"
-}
-
-variable "admin_password" {
-  description = "admin-password"
-  type        = string
-  default     = "Vaishnavi123"
-}
